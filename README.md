@@ -14,13 +14,9 @@ Free software, licensed under the [GNU AGPLv3](COPYING) (see [License](#license)
 
 An iPhone app that shows mobile YouTube (m.youtube.com) with these built in:
 
-- **Ad blocking.** Ads are stripped from the data YouTube sends, ad requests are blocked,
-  and any ad that still plays is skipped.
-- **SponsorBlock.** Sponsor segments, self-promotion, intros and outros are skipped,
-  using [SponsorBlock](https://sponsor.ajay.app).
-- **No Shorts or Playables.** They are removed from the feed, search and the bottom bar.
-- **Background play.** Audio keeps playing with the app in the background or the screen locked.
-- **Tweaks.** The bottom bar stays visible on every page, and feeds load ahead as you scroll.
+- **No Distractions.** Ad-blocking, SponserSkip, Youtube short and playables are removed.
+- **Background play.** Audio plays in background or when the screen is locked.
+- **Tweaks.** Minor quality of life improvements 
 
 ## Download
 
