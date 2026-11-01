@@ -5,8 +5,10 @@
  * YouTube pauses when its page becomes hidden, so the page is told it is
  * always visible. WebKit can still pause the video itself when the app
  * leaves the screen; such a pause, while really hidden and not at the end,
- * is undone. (The app's "Playback" audio session and the "audio" background
- * mode in Info.plist let iOS keep the sound going.)
+ * is undone. In the background the "up next" countdown between songs is
+ * skipped, so there is no silent gap for iOS to suspend the page in. (The
+ * app's "Playback" audio session and the "audio" background mode in
+ * Info.plist let iOS keep the sound going.)
  * Copyright (C) 2026 opal. License: AGPL-3.0-or-later.
  */
 (function () {
@@ -54,5 +56,37 @@
     if (!(video instanceof HTMLVideoElement) || video.ended) return;
     if (!reallyHidden() || !playingWhenHidden) return;
     setTimeout(() => { if (video.paused && reallyHidden()) video.play().catch(() => {}); }, 100);
+  }, true);
+
+  /*
+   * YouTube decides "are you still there?" from the time of your last touch
+   * (window._lact). While something plays, count that as activity.
+   */
+  let lastActivity = 0;
+  document.addEventListener('timeupdate', () => {
+    const now = Date.now();
+    if (now - lastActivity > 10000) { lastActivity = now; window._lact = now; }
+  }, true);
+
+  /*
+   * Between songs YouTube shows a 10-second "up next" countdown. With the
+   * screen locked nothing plays during it, and iOS may suspend the page, so
+   * the next song never starts. In the background, skip the countdown.
+   * (Only when autoplay is on: the countdown is on screen.)
+   */
+  document.addEventListener('ended', (e) => {
+    if (!(e.target instanceof HTMLVideoElement) || !reallyHidden() || !playingWhenHidden) return;
+    setTimeout(() => {
+      const player = document.getElementById('movie_player');
+      const countdown = document.querySelector('#player-endscreen[data-has-timer-countdown]');
+      if (countdown && player && typeof player.nextVideo === 'function') player.nextVideo();
+    }, 300);
+  }, true);
+
+  /* The next video may load paused while the app is hidden: start it. */
+  document.addEventListener('canplay', (e) => {
+    const video = e.target;
+    if (!(video instanceof HTMLVideoElement) || !reallyHidden() || !playingWhenHidden) return;
+    if (video.paused && !video.ended) video.play().catch(() => {});
   }, true);
 })();
