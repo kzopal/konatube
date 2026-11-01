@@ -9,12 +9,18 @@
   'use strict';
   const AD_KEYS = ['adPlacements', 'adSlots', 'playerAds', 'adBreakHeartbeatParams'];
 
-  /* Strip ad fields from a player response, wherever it is nested. */
+  /*
+   * Strip ad fields from a player response, wherever it is nested, and the
+   * "Video paused. Continue watching?" check (youThereRenderer), which
+   * otherwise pauses long listening sessions with the screen locked.
+   */
   function prune(obj) {
     if (!obj || typeof obj !== 'object') return obj;
     for (const target of [obj, obj.playerResponse, obj.response && obj.response.playerResponse]) {
       if (!target || typeof target !== 'object') continue;
       for (const k of AD_KEYS) if (k in target) delete target[k];
+      if (Array.isArray(target.messages))
+        target.messages = target.messages.filter((m) => !(m && m.youThereRenderer));
     }
     if (Array.isArray(obj)) for (const item of obj) prune(item);   /* batched responses */
     return obj;
