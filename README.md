@@ -22,10 +22,6 @@ An iPhone app that shows mobile YouTube (m.youtube.com) with these built in:
 - **Background play.** Audio keeps playing with the app in the background or the screen locked.
 - **Tweaks.** The bottom bar stays visible on every page, and feeds load ahead as you scroll.
 
-> [!WARNING]
-> YouTube keeps changing how it delivers ads, so an occasional ad may get through
-> until the blocking is updated.
-
 ## Download
 
 <p align="center">
@@ -37,14 +33,6 @@ An iPhone app that shows mobile YouTube (m.youtube.com) with these built in:
 Install the IPA with SideStore or LiveContainer, or [build it yourself](#building).
 
 ## How it works
-
-```mermaid
-graph LR
-    App[KonaTube] --> Web[m.youtube.com in a web view]
-    Rules[Blocking rules] --> Web
-    Scripts[Injected scripts] --> Web
-    Web --> You([YouTube without ads, Shorts or sponsors])
-```
 
 The app is one small native file that opens YouTube's mobile site. Everything else is
 blocking rules and scripts that run inside the page.
@@ -68,7 +56,7 @@ blocking rules and scripts that run inside the page.
 
 ## Building
 
-Linux with free tools only: no Mac, Xcode or Apple SDK needed.
+Build using Free tools on Linux
 
 ```sh
 sudo apt install clang-18 lld-18 python3
