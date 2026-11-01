@@ -25,6 +25,9 @@ ld64.lld -arch arm64 -platform_version ios 15.0 18.0 \
 
 printf 'APPL????' > "$APP/PkgInfo"
 
+# App icon (iPhone 60pt at @2x and @3x, named in Info.plist).
+cp res/AppIcon60x60@2x.png res/AppIcon60x60@3x.png "$APP/"
+
 # Injected into m.youtube.com: blocking rules and page scripts (see src/main.m).
 cp -R inject "$APP/inject"
 

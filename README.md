@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="res/icon.png" alt="KonaTube icon" width="128">
+
 # KonaTube
 
 [![Platform: iOS 15+](https://img.shields.io/badge/iOS-15%2B-black.svg?logo=apple&logoColor=white&style=for-the-badge)](#building "Platform")
@@ -50,7 +52,7 @@ blocking rules and scripts that run inside the page.
 | `inject/background.js` | Keeps audio playing in the background |
 | `inject/tweaks.js` | Bottom bar on every page, feeds load further ahead |
 | `include/rt.h`, `stubs/` | Hand-written iOS headers and link stubs, used instead of Apple's SDK |
-| `res/Info.plist` | App metadata |
+| `res/` | App metadata (`Info.plist`) and icon |
 
 </details>
 
