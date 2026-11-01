@@ -14,7 +14,7 @@ Free software, licensed under the [GNU AGPLv3](COPYING) (see [License](#license)
 
 An iPhone app that shows mobile YouTube (m.youtube.com) with these built in:
 
-- **No Distractions.** Ad-blocking, SponserSkip, Youtube short and playables are removed.
+- **No Distractions.** Ad-blocking, SponserBlock, Youtube Shorts and playables are removed.
 - **Background play.** Audio plays in background or when the screen is locked.
 - **Tweaks.** Minor quality of life improvements 
 
