@@ -53,6 +53,7 @@ __attribute__((objc_root_class))
 @class NSError;
 
 @interface NSString : NSObject
++ (instancetype)stringWithFormat:(NSString *)format, ...;
 + (instancetype)stringWithContentsOfFile:(NSString *)path encoding:(NSUInteger)encoding
                                    error:(NSError **)error;
 - (NSString *)stringByAppendingPathComponent:(NSString *)s;
@@ -76,12 +77,21 @@ __attribute__((objc_root_class))
                                     count:(NSUInteger)len;
 @end
 
+@interface NSMutableSet : NSObject
++ (instancetype)set;
+- (void)addObject:(id)obj;
+- (BOOL)containsObject:(id)obj;
+@end
+
 @interface NSDate : NSObject
 - (NSTimeInterval)timeIntervalSinceNow;
 @end
 
 @interface NSHTTPCookie : NSObject
 + (instancetype)cookieWithProperties:(NSDictionary *)properties;
+- (NSString *)name;
+- (NSString *)domain;
+- (NSString *)path;
 - (NSDictionary *)properties;
 - (NSDate *)expiresDate;
 @end
@@ -113,6 +123,12 @@ void NSLog(NSString *format, ...);
 
 /* ---- UIKit ---- */
 @interface UIResponder : NSObject
+@end
+
+@interface UIApplication : UIResponder
++ (UIApplication *)sharedApplication;
+- (NSUInteger)beginBackgroundTaskWithExpirationHandler:(void (^)(void))handler;
+- (void)endBackgroundTask:(NSUInteger)identifier;
 @end
 
 @interface UIColor : NSObject

@@ -6,5 +6,5 @@ current-version: 1
 exports:
   - targets:      [ arm64-ios ]
     symbols:      [ _NSLog ]
-    objc-classes: [ NSArray, NSBundle, NSHTTPCookie, NSMutableArray, NSString, NSURL, NSURLRequest, NSUserDefaults ]
+    objc-classes: [ NSArray, NSBundle, NSHTTPCookie, NSMutableArray, NSMutableSet, NSString, NSURL, NSURLRequest, NSUserDefaults ]
 ...

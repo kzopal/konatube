@@ -6,5 +6,5 @@ current-version: 1
 exports:
   - targets:      [ arm64-ios ]
     symbols:      [ _UIApplicationMain ]
-    objc-classes: [ UIColor, UIResponder, UIScreen, UIViewController, UIWindow ]
+    objc-classes: [ UIApplication, UIColor, UIResponder, UIScreen, UIViewController, UIWindow ]
 ...

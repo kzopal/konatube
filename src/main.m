@@ -30,37 +30,66 @@ static NSString *resource(NSString *name) {
 #pragma mark - cookies
 
 /*
- * The sign-in lives in cookies. WebKit's own cookie storage doesn't
- * reliably survive the app being closed, so they are also kept in the
- * app's settings and put back before the first page loads.
+ * The sign-in lives in cookies. WebKit keeps them itself but writes them to
+ * disk lazily, so a copy is also kept in the app's settings. At launch only
+ * the saved cookies WebKit no longer has are put back: one it still has is
+ * left alone, because Google renews sign-in cookies as you use it and an
+ * older copy over a newer one would sign you out.
  */
 static WKHTTPCookieStore *cookieStore(void) {
     return [[WKWebsiteDataStore defaultDataStore] httpCookieStore];
 }
 
+static BOOL gRestored = NO;          /* no saving until the saved copy has been read */
+static NSUInteger gSaveGeneration;   /* only the newest save may write */
+
+static NSString *cookieKey(NSHTTPCookie *c) {
+    return [NSString stringWithFormat:@"%@|%@|%@", [c name], [c domain], [c path]];
+}
+
+/* Copy every cookie to the settings, with a little background time so the app isn't suspended mid-save. */
 static void saveCookies(void) {
+    if (!gRestored) return;
+    NSUInteger generation = ++gSaveGeneration;
+    UIApplication *app = [UIApplication sharedApplication];
+    __block NSUInteger task = [app beginBackgroundTaskWithExpirationHandler:^{
+        [app endBackgroundTask:task];
+        task = 0;
+    }];
     [cookieStore() getAllCookies:^(NSArray *cookies) {
-        NSMutableArray *saved = [NSMutableArray array];
-        for (NSHTTPCookie *c in cookies) {
-            NSDictionary *props = [c properties];
-            if (props) [saved addObject:props];
+        if (generation == gSaveGeneration) {   /* a newer save started meanwhile: let it write */
+            NSMutableArray *saved = [NSMutableArray array];
+            for (NSHTTPCookie *c in cookies) {
+                NSDictionary *props = [c properties];
+                if (props) [saved addObject:props];
+            }
+            [[NSUserDefaults standardUserDefaults] setObject:saved forKey:kCookiesKey];
         }
-        [[NSUserDefaults standardUserDefaults] setObject:saved forKey:kCookiesKey];
+        if (task) [app endBackgroundTask:task];
+        task = 0;
     }];
 }
 
 static void restoreCookies(void (^done)(void)) {
     NSArray *saved = [[NSUserDefaults standardUserDefaults] arrayForKey:kCookiesKey];
-    __block NSInteger pending = 1;
-    void (^finishOne)(void) = ^{ if (--pending == 0) done(); };
-    for (NSDictionary *props in saved ?: @[]) {
-        NSHTTPCookie *c = [NSHTTPCookie cookieWithProperties:props];
-        NSDate *expires = [c expiresDate];
-        if (!c || (expires && [expires timeIntervalSinceNow] < 0)) continue;
-        pending++;
-        [cookieStore() setCookie:c completionHandler:finishOne];
-    }
-    finishOne();
+    [cookieStore() getAllCookies:^(NSArray *current) {
+        NSMutableSet *have = [NSMutableSet set];
+        for (NSHTTPCookie *c in current) [have addObject:cookieKey(c)];
+
+        __block NSInteger pending = 1;
+        void (^finishOne)(void) = ^{
+            if (--pending == 0) { gRestored = YES; done(); }
+        };
+        for (NSDictionary *props in saved ?: @[]) {
+            NSHTTPCookie *c = [NSHTTPCookie cookieWithProperties:props];
+            if (!c || [have containsObject:cookieKey(c)]) continue;
+            NSDate *expires = [c expiresDate];
+            if (expires && [expires timeIntervalSinceNow] < 0) continue;
+            pending++;
+            [cookieStore() setCookie:c completionHandler:finishOne];
+        }
+        finishOne();
+    }];
 }
 
 #pragma mark - web view
@@ -159,7 +188,7 @@ static void restoreCookies(void (^done)(void)) {
 }
 
 /* Save the cookies whenever the app leaves the screen, before it can be closed. */
-- (void)applicationDidEnterBackground:(id)application { saveCookies(); }
+- (void)applicationWillResignActive:(id)application { saveCookies(); }
 - (void)applicationWillTerminate:(id)application { saveCookies(); }
 
 @end
