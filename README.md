@@ -21,7 +21,7 @@ An iPhone app that shows mobile YouTube (m.youtube.com) with these built in:
 ## Download
 
 <p align="center">
-  <a href="https://github.com/kzopal/konatube/releases/latest">
+  <a href="https://github.com/kzopal/konatube/releases">
     <img src="https://img.shields.io/badge/Download-.ipa-2ea44f.svg?logo=apple&logoColor=white&style=for-the-badge" alt="Download .ipa" height="50">
   </a>
 </p>
