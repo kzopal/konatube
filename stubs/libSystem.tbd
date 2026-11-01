@@ -1,0 +1,9 @@
+--- !tapi-tbd
+tbd-version:     4
+targets:         [ arm64-ios ]
+install-name:    '/usr/lib/libSystem.B.dylib'
+current-version: 1
+exports:
+  - targets:      [ arm64-ios ]
+    symbols:      [ dyld_stub_binder, __Block_object_assign, __Block_object_dispose, __NSConcreteGlobalBlock, __NSConcreteStackBlock, ___stack_chk_fail, ___stack_chk_guard ]
+...
