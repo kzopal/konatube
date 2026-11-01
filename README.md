@@ -16,7 +16,13 @@ An iPhone app that shows mobile YouTube (m.youtube.com) with these built in:
 
 - **No Distractions.** Ad-blocking, SponserBlock, Youtube Shorts and playables are removed.
 - **Background play.** Audio plays in background or when the screen is locked.
-- **Tweaks.** Minor quality of life improvements 
+- **Tweaks.** Minor quality of life improvements
+
+<p align="center">
+  <a href="screenshots/lockscreen-controls.png"><img src="screenshots/lockscreen-controls.png" alt="KonaTube's lock screen playback controls" width="250"></a>&nbsp;<a href="screenshots/lockscreen-artwork.png"><img src="screenshots/lockscreen-artwork.png" alt="KonaTube playing music in the background, shown on the lock screen" width="250"></a>
+  <br>
+  <em>Here's a showcase of the app playing music in the background.</em>
+</p>
 
 ## Download
 
