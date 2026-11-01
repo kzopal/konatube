@@ -10,8 +10,6 @@
 
 </div>
 
-Free software, licensed under the [GNU AGPLv3](COPYING) (see [License](#license)).
-
 An iPhone app that shows mobile YouTube (m.youtube.com) with these built in:
 
 - **No Distractions.** Ad-blocking, SponserBlock, Youtube Shorts and playables are removed.
