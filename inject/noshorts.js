@@ -61,15 +61,18 @@
   }
 
   const parse = JSON.parse;
-  JSON.parse = function () { return clean(parse.apply(this, arguments)); };
+  /* Never let a mistake here break YouTube: on any error, pass the data through untouched. */
+  const safeClean = (obj) => { try { return clean(obj); } catch (e) { return obj; } };
+
+  JSON.parse = function () { return safeClean(parse.apply(this, arguments)); };
 
   const json = Response.prototype.json;
-  Response.prototype.json = function () { return json.apply(this, arguments).then(clean); };
+  Response.prototype.json = function () { return json.apply(this, arguments).then(safeClean); };
 
   let initial;
   Object.defineProperty(window, 'ytInitialData', {
     configurable: true,
     get: () => initial,
-    set: (v) => { initial = clean(v); },
+    set: (v) => { initial = safeClean(v); },
   });
 })();

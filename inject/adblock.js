@@ -28,17 +28,20 @@
 
   /* Every JSON YouTube parses: API responses (fetch/XHR text) and inline data. */
   const parse = JSON.parse;
-  JSON.parse = function () { return prune(parse.apply(this, arguments)); };
+  /* Never let a mistake here break YouTube: on any error, pass the data through untouched. */
+  const safePrune = (obj) => { try { return prune(obj); } catch (e) { return obj; } };
+
+  JSON.parse = function () { return safePrune(parse.apply(this, arguments)); };
 
   const json = Response.prototype.json;
-  Response.prototype.json = function () { return json.apply(this, arguments).then(prune); };
+  Response.prototype.json = function () { return json.apply(this, arguments).then(safePrune); };
 
   /* A watch page embeds its player response as a global. */
   let initial;
   Object.defineProperty(window, 'ytInitialPlayerResponse', {
     configurable: true,
     get: () => initial,
-    set: (v) => { initial = prune(v); },
+    set: (v) => { initial = safePrune(v); },
   });
 
   /* Anything that still plays as an ad: mute it, jump to its end, press Skip. */

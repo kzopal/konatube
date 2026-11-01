@@ -143,17 +143,16 @@ static void restoreCookies(void (^done)(void)) {
 }
 
 /*
- * Keep the page out from under the status bar. At the bottom only a third
- * of the home indicator's space is kept, so the bottom bar sits low.
+ * Keep the page out from under the status bar. At the bottom it goes all
+ * the way down, so YouTube's bottom bar rests on the screen's edge.
  */
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     CGRect b = [[self view] bounds];
     UIEdgeInsets safe = [[self view] safeAreaInsets];
-    CGFloat bottom = safe.bottom / 3;
     [_web setFrame:CGRectMake(b.origin.x + safe.left, b.origin.y + safe.top,
                               b.size.width - safe.left - safe.right,
-                              b.size.height - safe.top - bottom)];
+                              b.size.height - safe.top)];
 }
 
 /* Every finished page (sign-in included) saves the cookies. */

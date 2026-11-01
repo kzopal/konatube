@@ -3,7 +3,7 @@
  *
  *  - The bottom bar (Home, Subscriptions, You) stays on every page, the
  *    watch page included, using YouTube's own "persistent_floaty_pivot_bar"
- *    option.
+ *    option, resting flat on the bottom edge (hidden in landscape).
  *  - Feeds load their next batch about two videos earlier than YouTube's
  *    own trigger (10% of the screen before the end), so scrolling rarely
  *    reaches the bottom before more videos are there.
@@ -14,6 +14,27 @@
   'use strict';
 
   /* ---- bottom bar on every page ---- */
+
+  /*
+   * YouTube's floating bar hovers above the bottom with a gap under it.
+   * Instead it rests flat on the bottom edge, full width, with rounded top
+   * corners, keeping its see-through background. Its own bottom padding
+   * (meant for the home indicator) is replaced by a small gap, and the
+   * items sit centered in the bar. In landscape the bar is hidden.
+   */
+  const style = document.createElement('style');
+  style.textContent = `
+    .persistent-floaty-pivot-bar {
+      bottom: 0 !important;
+      margin: 0 !important;
+      border-radius: 16px 16px 0 0 !important;
+      padding: 0 0 6px !important;
+      align-items: center !important;
+    }
+    @media (orientation: landscape) {
+      ytm-pivot-bar-renderer { display: none !important; }
+    }`;
+  document.documentElement.appendChild(style);
 
   /* The page's inline `var ytcfg = {...}` lands in this setter. */
   const FLAGS = { persistent_floaty_pivot_bar: true };
@@ -53,7 +74,8 @@
   const unobserve = IO.prototype.unobserve;
 
   function Observer(callback, options) {
-    const o = new IO(callback, options);
+    /* Reflect.construct keeps code that builds on IntersectionObserver (subclasses) working. */
+    const o = Reflect.construct(IO, [callback, options], new.target || IO);
     callbacks.set(o, callback);
     return o;
   }
